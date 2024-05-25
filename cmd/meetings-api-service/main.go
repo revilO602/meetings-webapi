@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/revilO602/meetings-webapi/api"
+	"github.com/revilO602/meetings-webapi/internal/meetings"
 )
 
 func main() {
@@ -22,6 +23,7 @@ func main() {
 	engine := gin.New()
 	engine.Use(gin.Recovery())
 	// request routings
+	meetings.AddRoutes(engine)
 	engine.GET("/openapi", api.HandleOpenApi)
 	engine.Run(":" + port)
 }

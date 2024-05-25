@@ -1,0 +1,5 @@
+internal/meetings/README.md
+internal/meetings/api_meetings_list.go
+internal/meetings/model_meetings_list_entry.go
+internal/meetings/model_new_meeting.go
+internal/meetings/routers.go

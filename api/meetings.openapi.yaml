@@ -1,0 +1,336 @@
+openapi: 3.0.0
+servers:
+  - description: Cluster Endpoint
+    url: /api
+info:
+  description: Online meetings between doctors and patients management for Web-In-Cloud system
+  version: "1.0.0"
+  title: Meetings Api
+  contact:
+    email: leoentiev.oliver@gmail.com
+  license:
+    name: CC BY 4.0
+    url: "https://creativecommons.org/licenses/by/4.0/"
+tags:
+  - name: meetingsList
+    description: Meetings List API
+paths:
+  "/meetings":
+    get:
+      tags:
+        - meetingsList
+      summary: Provides the online meetings list
+      operationId: getMeetingsList
+      description: You get a list of online meetings
+      responses:
+        "200":
+          description: value of the meetings list entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MeetingsListEntry"
+              examples:
+                response:
+                  $ref: "#/components/examples/MeetingsListEntriesExample"
+    post:
+      tags:
+        - meetingsList
+      summary: Creates new meeting
+      operationId: createMeeting
+      description: Use this method to create a new meeting.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewMeeting"
+            examples:
+              request:
+                $ref: "#/components/examples/NewMeetingExample"
+        description: Meeting to create
+        required: true
+      responses:
+        "200":
+          description: >-
+            value of the newly created meeting
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MeetingsListEntry"
+              examples:
+                response:
+                  $ref: "#/components/examples/MeetingsListEntryExample"
+        "400":
+          description: Missing mandatory properties of input object.
+        "409":
+          description: Entry with the specified id already exists
+  "/meetings/{entryId}":
+    get:
+      tags:
+        - meetingsList
+      summary: Provides details about meeting
+      operationId: getMeeting
+      description: >-
+        By using entryId you can details of particular meeting.
+      parameters:
+        - in: path
+          name: entryId
+          description: pass the id of the particular meeting
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: value of the meeting
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MeetingsListEntry"
+              examples:
+                response:
+                  $ref: "#/components/examples/MeetingsListEntryExample"
+        "404":
+          description: Meeting with such ID does not exists
+    put:
+      tags:
+        - meetingsList
+      summary: Updates specific meeting
+      operationId: updateMeeting
+      description: Use this method to update content of the meeting.
+      parameters:
+        - in: path
+          name: entryId
+          description: pass the id of the particular meeting
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MeetingsListEntry"
+            examples:
+              request:
+                $ref: "#/components/examples/MeetingsListEntryExample"
+        description: Meeting to update
+        required: true
+      responses:
+        "200":
+          description: >-
+            value of the meeting with updated fields
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MeetingsListEntry"
+              examples:
+                response:
+                  $ref: "#/components/examples/MeetingsListEntryExample"
+        "403":
+          description: >-
+            Value of the entryID and the data id is mismatching. Details are
+            provided in the response body.
+        "404":
+          description: Meeting with such ID does not exists
+    delete:
+      tags:
+        - meetingsList
+      summary: Deletes specific meeting
+      operationId: deleteMeeting
+      description: Use this method to delete the specific meeting.
+      parameters:
+        - in: path
+          name: entryId
+          description: pass the id of the particular meeting
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Meeting deleted
+        "404":
+          description: Meeting with such ID does not exists
+components:
+  schemas:
+    MeetingsListEntry:
+      type: object
+      required:
+        [
+          id,
+          doctorName,
+          patientName,
+          date,
+          startTime,
+          endTime,
+          important,
+          platform,
+          symptoms,
+          diagnosis,
+          notes,
+        ]
+      properties:
+        id:
+          type: string
+          example: x321ab3
+          description: Unique id of the entry in this meetings list
+        doctorName:
+          type: string
+          example: Jožko Púčik
+          description: Name of doctor for the meeting
+        patientName:
+          type: string
+          example: Jožko Púčik
+          description: Name of patient for the meeting
+        date:
+          type: string
+          format: date
+          example: "2038-12-24"
+          description: Date when meeting will take place
+        startTime:
+          type: string
+          example: "10:35"
+          description: Start time of meeting
+        endTime:
+          type: string
+          example: "10:35"
+          description: End time of meeting
+        important:
+          type: boolean
+          example: true
+          description: Whether meeting is important
+        platform:
+          type: string
+          example: "ms_teams"
+          description: Online platform for the meeting
+        symptoms:
+          type: string
+          example: "Coughing, sneezing, fever."
+          description: Patients symptoms
+        diagnosis:
+          type: string
+          example: "Murder!"
+          description: Diagnosis for the patients problems
+        notes:
+          type: string
+          example: "Patient has a history of eating disorders"
+          description: Extra notes from the doctor about the patient
+      example:
+        $ref: "#/components/examples/MeetingsListEntryExample"
+    NewMeeting:
+      type: object
+      required:
+        [
+          doctorName,
+          patientName,
+          date,
+          startTime,
+          endTime,
+          important,
+          platform,
+          symptoms,
+          diagnosis,
+          notes,
+        ]
+      properties:
+        doctorName:
+          type: string
+          example: Jožko Púčik
+          description: Name of doctor for the meeting
+        patientName:
+          type: string
+          example: Jožko Púčik
+          description: Name of patient for the meeting
+        date:
+          type: string
+          format: date
+          example: "2038-12-24"
+          description: Date when meeting will take place
+        startTime:
+          type: string
+          example: "10:35"
+          description: Start time of meeting
+        endTime:
+          type: string
+          example: "10:35"
+          description: End time of meeting
+        important:
+          type: boolean
+          example: true
+          description: Whether meeting is important
+        platform:
+          type: string
+          example: "ms_teams"
+          description: Online platform for the meeting
+        symptoms:
+          type: string
+          example: "Coughing, sneezing, fever."
+          description: Patients symptoms
+        diagnosis:
+          type: string
+          example: "Murder!"
+          description: Diagnosis for the patients problems
+        notes:
+          type: string
+          example: "Patient has a history of eating disorders"
+          description: Extra notes from the doctor about the patient
+      example:
+        $ref: "#/components/examples/MeetingsListEntryExample"
+  examples:
+    MeetingsListEntryExample:
+      summary: Ľudomír Zlostný and Dr. Peter Fila meeting
+      description: |
+        Entry represents an online meeting between patient and doctor
+      value:
+        id: x321ab3
+        patientName: Ľudomír Zlostný
+        doctorName: Ľudomír Zlostný
+        date: "2038-12-24"
+        startTime: "10:35"
+        endTime: "11:35"
+        important: false
+        platform: "ms_teams"
+        symptoms: "Coughing, sneezing, fever."
+        diagnosis: "Murder!"
+        notes: "Patient has a history of eating disorders"
+    NewMeetingExample:
+      summary: Ľudomír Zlostný and Dr. Peter Fila meeting
+      description: |
+        Entry represents an online meeting between patient and doctor
+      value:
+        patientName: Ľudomír Zlostný
+        doctorName: Ľudomír Zlostný
+        date: "2038-12-24"
+        startTime: "10:35"
+        endTime: "11:35"
+        important: false
+        platform: "ms_teams"
+        symptoms: "Coughing, sneezing, fever."
+        diagnosis: "Murder!"
+        notes: "Patient has a history of eating disorders"
+    MeetingsListEntriesExample:
+      summary: List of online meetings
+      description: |
+        Example list of online meeting containing 2 meetings
+      value:
+        - id: x321ab3
+          doctorName: Dr. Jožko Púčik
+          patientName: Pacient Chorak
+          date: "2038-12-24"
+          startTime: "10:35"
+          endTime: "11:35"
+          important: false
+          platform: "ms_teams"
+          symptoms: "Coughing, sneezing, fever."
+          diagnosis: "Murder!"
+          notes: "Patient has a history of eating disorders"
+        - id: x321ab3
+          doctorName: Dr. Jožko Mrkva
+          patientName: Pacient Zdravak
+          date: "2038-12-26"
+          startTime: "10:35"
+          endTime: "11:35"
+          important: true
+          platform: "ms_teams"
+          symptoms: "Coughing, sneezing, fever."
+          diagnosis: "Murder!"
+          notes: "Patient has a history of eating disorders"

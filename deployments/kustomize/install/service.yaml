@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: meetings-webapi
+spec:
+  selector:
+    pod: meetings-webapi-label
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: webapi-port

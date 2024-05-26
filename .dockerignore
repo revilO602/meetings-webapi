@@ -1,0 +1,5 @@
+internal/meetings/api_*
+internal/meetings/model_*
+internal/meetings/routers.go
+build/
+deployments/
